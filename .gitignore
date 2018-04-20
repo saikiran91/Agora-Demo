@@ -48,3 +48,8 @@ google-services.json
 freeline.py
 freeline/
 freeline_project_description.json
+libs/
+src/androidTest/
+src/main/java/
+src/main/res/drawable/
+src/test/
