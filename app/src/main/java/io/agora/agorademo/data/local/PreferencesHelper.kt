@@ -4,7 +4,9 @@ import com.chibatching.kotpref.KotprefModel
 
 
 object UserPrefs : KotprefModel() {
-    var name by stringPref()
     var id by stringPref()
+    var name by stringPref()
+    var email by stringPref()
+    var photoUrl by stringPref()
 }
 

@@ -1,8 +1,11 @@
 <resources>
-    <string name="app_name">AgoraDemo</string>
+    <string name="app_name">People Cart</string>
 
     <!-- Error View -->
     <string name="error_title">Oops</string>
-    <string name="error_message">There was a problem loading the pokemon, please try again!</string>
+    <string name="error_message">There was a problem loading the page, please try again!</string>
     <string name="error_reload">Reload</string>
+    <string name="login_title">Ashirwad Login</string>
+    <string name="title_activity_brands">BrandsActivity</string>
+    <string name="web_client_id">906498791230-imk8ia69vjk2ai237t85v8j5k509bn9a.apps.googleusercontent.com</string>
 </resources>

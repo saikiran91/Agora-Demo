@@ -1,10 +1,11 @@
 package io.agora.agorabase.openlive;
 
 import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import io.agora.agorabase.openlive.model.WorkerThread;
 
-public abstract class AGApplication extends Application {
+public abstract class AGApplication extends MultiDexApplication {
 
     private WorkerThread mWorkerThread;
 

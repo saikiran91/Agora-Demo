@@ -10,7 +10,7 @@ android {
         targetSdkVersion 27
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -35,5 +35,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'org.slf4j:slf4j-api:1.7.21'
+    implementation 'com.android.support:multidex:1.0.1'
+
 
 }
