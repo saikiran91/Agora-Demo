@@ -8,4 +8,13 @@
     tools:context=".features.brands.BrandsActivity"
     tools:showIn="@layout/activity_brands">
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="true"
+        android:paddingTop="8dp"
+        tools:listitem="@layout/item_brands">
+
+    </android.support.v7.widget.RecyclerView>
+
 </android.support.constraint.ConstraintLayout>

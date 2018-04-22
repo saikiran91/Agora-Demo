@@ -7,3 +7,8 @@ data class Broadcast(val user: DocumentReference? = null,
                      var broadcast_id: String = "",
                      var name: String = "",
                      val startDate: Date = Date())
+
+data class Brand(val id: String = "",
+                 var name: String = "",
+                 var image: String = "",
+                 val order: Int = 0)
