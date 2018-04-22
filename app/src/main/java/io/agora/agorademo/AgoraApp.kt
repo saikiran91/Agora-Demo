@@ -1,6 +1,7 @@
 package io.agora.agorademo
 
 import android.content.Context
+import com.google.firebase.firestore.FirebaseFirestore
 import io.agora.agorabase.openlive.AGApplication
 import io.agora.agorademo.injection.component.ApplicationComponent
 import io.agora.agorademo.injection.component.DaggerApplicationComponent

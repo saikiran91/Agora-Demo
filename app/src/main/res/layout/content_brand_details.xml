@@ -5,16 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".features.brands.BrandsActivity"
-    tools:showIn="@layout/activity_brands">
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="true"
-        android:paddingTop="8dp"
-        tools:listitem="@layout/item_brands">
-
-    </android.support.v7.widget.RecyclerView>
+    tools:context=".features.branddetails.BrandDetailsActivity"
+    tools:showIn="@layout/activity_brand_details">
 
 </android.support.constraint.ConstraintLayout>

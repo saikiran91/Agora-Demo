@@ -8,4 +8,5 @@
     <string name="login_title">Ashirwad Login</string>
     <string name="title_activity_brands">BrandsActivity</string>
     <string name="web_client_id">906498791230-imk8ia69vjk2ai237t85v8j5k509bn9a.apps.googleusercontent.com</string>
+    <string name="title_activity_brand_details">BrandDetailsActivity</string>
 </resources>

@@ -11,4 +11,5 @@ data class Broadcast(val user: DocumentReference? = null,
 data class Brand(val id: String = "",
                  var name: String = "",
                  var image: String = "",
-                 val order: Int = 0)
+                 val order: Int = 0,
+                 val description: String = "")

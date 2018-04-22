@@ -27,6 +27,10 @@
             android:name=".features.brands.BrandsActivity"
             android:label="@string/title_activity_brands"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".features.branddetails.BrandDetailsActivity"
+            android:label="@string/title_activity_brand_details"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
