@@ -9,8 +9,10 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+
 
 @Singleton
 internal class DataManagerImpl @Inject constructor() : DataManager {
@@ -47,10 +49,10 @@ internal class DataManagerImpl @Inject constructor() : DataManager {
         }.subscribeOn(Schedulers.io())
     }
 
-    override fun listenToNewQuestion(schedule: Broadcast): Observable<List<Question>> {
+    override fun listenToNewQuestion(broadcast: Broadcast): Observable<List<Question>> {
         return Observable.create<List<Question>> { emitter ->
-            FirebaseFirestore.getInstance().collection("Questions")
-                    .whereEqualTo("schedule_id", schedule.id)
+            FirebaseFirestore.getInstance().collection("questions")
+                    .whereEqualTo("broadcast_id", broadcast.id)
                     .addSnapshotListener { result, exception ->
                         when {
                             exception != null -> emitter.onError(exception)
@@ -66,11 +68,11 @@ internal class DataManagerImpl @Inject constructor() : DataManager {
         return Observable.create<Question> { emitter ->
 
             FirebaseFirestore.getInstance()
-                    .collection("Questions")
+                    .collection("questions")
                     .document(question.id)
                     .set(question, SetOptions.merge())
 
-            FirebaseFirestore.getInstance().collection("Questions")
+            FirebaseFirestore.getInstance().collection("questions")
                     .whereEqualTo("id", question.id)
                     .addSnapshotListener { result, exception ->
                         when {
@@ -90,7 +92,7 @@ internal class DataManagerImpl @Inject constructor() : DataManager {
     override fun askQuestion(question: Question): Completable {
         return Completable.create { emitter ->
             FirebaseFirestore.getInstance()
-                    .collection("Questions")
+                    .collection("questions")
                     .document(question.id)
                     .set(question)
                     .addOnSuccessListener { emitter.onComplete() }
@@ -110,4 +112,37 @@ internal class DataManagerImpl @Inject constructor() : DataManager {
         }.subscribeOn(Schedulers.io())
     }
 
+    override fun updateBroadcastPeople(broadcastId: String, count: Int) {
+        val db = FirebaseFirestore.getInstance()
+        val sfDocRef = db.collection("broadcasts").document(broadcastId);
+        db.runTransaction({ transaction ->
+            val snapshot = transaction.get(sfDocRef)
+            val newPeopleCount = snapshot.getDouble("people")!!.plus(count)
+            if (newPeopleCount > 0) {
+                transaction.update(sfDocRef, "people", newPeopleCount)
+            } else {
+                Timber.e("newPeopleCount is already zero")
+            }
+        })
+                .addOnSuccessListener({ Timber.d("updateBroadcastPeople Transaction success!") })
+                .addOnFailureListener({ e -> Timber.w(e, "updateBroadcastPeople Transaction failure.") })
+    }
+
+    override fun listenToQuestionUpdate(question: Question): Observable<Question> {
+        return Observable.create<Question> { emitter ->
+            FirebaseFirestore.getInstance().collection("questions")
+                    .whereEqualTo("id", question.id)
+                    .addSnapshotListener { result, exception ->
+                        when {
+                            exception != null -> emitter.onError(exception)
+                            result != null -> result.toObjects(Question::class.java).let { listOfQuestions ->
+                                if (listOfQuestions.isNotEmpty()) {
+                                    emitter.onNext(listOfQuestions.first())
+                                }
+                            }
+                            else -> emitter.onError(Exception("listenToQuestionUpdate result is null or empty"))
+                        }
+                    }
+        }.subscribeOn(Schedulers.io())
+    }
 }

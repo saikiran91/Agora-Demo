@@ -4,13 +4,16 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.os.Handler
 import android.preference.PreferenceManager
+import android.support.v4.content.ContextCompat
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
-
 import io.agora.agorabase.openlive.model.AGEventHandler
 import io.agora.agorabase.openlive.model.ConstantApp
 import io.agora.agorabase.openlive.model.VideoStatusData
@@ -32,10 +35,9 @@ import java.util.*
 import javax.inject.Inject
 
 class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView, ErrorView.ErrorListener {
-
-
     override val layout: Int get() = R.layout.activity_live_room
-    @Inject lateinit var presenter: BroadcastPresenter
+    @Inject
+    lateinit var presenter: BroadcastPresenter
     private val hexValue = 0XFFFFFFFFL.toInt()
     private var mGridVideoViewContainer: GridVideoViewContainer? = null
     private var mSmallVideoViewDock: RelativeLayout? = null
@@ -48,9 +50,39 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
         super.onCreate(savedInstanceState)
         activityComponent().inject(this)
         presenter.attachView(this)
-        fab.setOnClickListener { question_list.visible(!question_list.isShown) }
+        fab.setOnClickListener {
+            question_list.visible(!question_list.isShown)
+            fab.count = 0
+        }
         question_list.adapter = presenter.lastAdapter
     }
+
+    private fun askQuestion() {
+        val input = EditText(this)
+        input.hint = "Your question?"
+        input.imeOptions = EditorInfo.IME_ACTION_DONE
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setPositiveButton("Done", { _, _ ->
+            presenter.askQuestion(input.text.toString())
+        })
+        input.setOnEditorActionListener { _, actionId, _ ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_DONE -> {
+                    presenter.askQuestion(input.text.toString())
+                    true
+                }
+                else -> false
+            }
+        }
+        alertDialog.create()
+        alertDialog.setIcon(R.drawable.ic_fab_question)
+        alertDialog.setTitle("Ask Question")
+        alertDialog.setView(input)
+        alertDialog.show()
+        input.showKeyboard()
+
+    }
+
 
     override fun onBackPressed() {
         if (question_list.isShown) {
@@ -76,6 +108,10 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
         message.showAsToast(applicationContext)
     }
 
+    override fun askQuestionSuccess(message: String) {
+        message.showAsToast(applicationContext)
+    }
+
     override fun onReloadData() {
 
     }
@@ -90,6 +126,10 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
 
     private fun isBroadcaster(cRole: Int): Boolean {
         return cRole == Constants.CLIENT_ROLE_BROADCASTER
+    }
+
+    private fun getRole(): Int {
+        return intent.getIntExtra(ConstantApp.ACTION_KEY_CROLE, 0)
     }
 
     override fun initUIandEvent() {
@@ -137,6 +177,8 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
             broadcasterUI(button1, button2, button3)
         } else {
             audienceUI(button1, button2, button3)
+            fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_fab_question));
+            fab.setOnClickListener { askQuestion() }
         }
 
         worker().joinChannel(roomName, config().mUid)
@@ -208,7 +250,7 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
         doLeaveChannel()
         event().removeEventHandler(this)
         mUidsList.clear()
-        EventBus.getDefault().postSticky(EndLiveBroadcastEvent())
+        EventBus.getDefault().postSticky(EndLiveBroadcastEvent(getRole()))
     }
 
     private fun doLeaveChannel() {
@@ -475,7 +517,7 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
     override fun onResume() {
         super.onResume()
         EventBus.getDefault().regOnce(this)
-        presenter.listenToNewQuestions()
+        if (isBroadcaster(getRole())) presenter.listenToNewQuestions()
     }
 
     override fun onDestroy() {

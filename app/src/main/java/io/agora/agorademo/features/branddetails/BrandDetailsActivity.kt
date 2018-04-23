@@ -12,6 +12,7 @@ import io.agora.agorademo.data.model.Brand
 import io.agora.agorademo.data.model.Broadcast
 import io.agora.agorademo.features.base.MvpBaseActivity
 import io.agora.agorademo.features.broadcast.BroadcastActivity
+import io.agora.agorademo.features.broadcast.EndLiveBroadcastEvent
 import io.agora.agorademo.features.broadcast.LaunchBroadCastEvent
 import io.agora.agorademo.util.regOnce
 import io.agora.agorademo.util.showDialogWithAction
@@ -83,10 +84,22 @@ class BrandDetailsActivity : MvpBaseActivity(), BrandDetailsMvpView {
         eventBus.removeStickyEvent(this)
     }
 
-    override fun launchBroadcastActivity(broadcast: Broadcast) {
+
+    @Subscribe(sticky = true)
+    fun onEndLiveBroadcastEvent(event: EndLiveBroadcastEvent) {
+        if (event.role == Constants.CLIENT_ROLE_BROADCASTER) {
+            mPresenter.endBroadcast()
+        } else {
+            mPresenter.exitBroadcast()
+        }
+        eventBus.removeStickyEvent(event)
+    }
+
+
+    override fun launchBroadcastActivity(broadcast: Broadcast, role: Int) {
         EventBus.getDefault().postSticky(LaunchBroadCastEvent(broadcast = broadcast))
         val i = Intent(this, BroadcastActivity::class.java)
-        i.putExtra(ConstantApp.ACTION_KEY_CROLE, Constants.CLIENT_ROLE_BROADCASTER)
+        i.putExtra(ConstantApp.ACTION_KEY_CROLE, role)
         i.putExtra(ConstantApp.ACTION_KEY_ROOM_NAME, UserPrefs.broadcastChannel)
         startActivity(i)
     }

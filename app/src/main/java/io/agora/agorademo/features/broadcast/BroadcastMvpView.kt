@@ -8,4 +8,5 @@ interface BroadcastMvpView : MvpView {
     fun showError(message: String)
     fun updateQuestionCount(size: Int)
     fun hideQuestionList()
+    fun askQuestionSuccess(message: String)
 }

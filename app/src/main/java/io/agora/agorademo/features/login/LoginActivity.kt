@@ -41,6 +41,7 @@ class LoginActivity : MvpBaseActivity(), LoginMvpView, ErrorView.ErrorListener {
         super.onCreate(savedInstanceState)
         activityComponent().inject(this)
         mMainPresenter.attachView(this)
+        mGoogleSignInClient.signOut()
         login_btn.setOnClickListener {
             signIn()
         }

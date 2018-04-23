@@ -61,7 +61,7 @@ class BrandsActivity : MvpBaseActivity(), BrandsMvpView {
         @BindingAdapter("bind:imageUrl")
         fun loadImage(view: ImageView, imageUrl: String) {
             val mPicasso = Picasso.get()
-//            if (BuildConfig.DEBUG) mPicasso.setIndicatorsEnabled(true)
+            // if (BuildConfig.DEBUG) mPicasso.setIndicatorsEnabled(true)
             mPicasso.load(imageUrl).into(view)
         }
     }

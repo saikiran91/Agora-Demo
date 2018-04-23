@@ -1,7 +1,6 @@
 package io.agora.agorademo.data.model
 
 import com.google.firebase.auth.FirebaseAuth
-import java.util.*
 
 data class Broadcast(var id: String = "",
                      var brand_id: String = "",
@@ -23,8 +22,8 @@ data class Brand(val id: String = "",
 
 data class Question(val id: String = "",
                     val answered: Boolean = false,
+                    val brand_id: String = "",
                     val question: String = "",
-                    val user_id: String = FirebaseAuth.getInstance().currentUser?.uid ?: "0",
-                    val user_name: String = FirebaseAuth.getInstance().currentUser?.displayName
-                            ?: "Unknown",
+                    val user_id: String = "",
+                    val user_name: String = "",
                     val broadcast_id: String = "")

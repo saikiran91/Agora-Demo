@@ -12,6 +12,7 @@ import io.agora.agorademo.databinding.ItemBroadcastBinding
 import io.agora.agorademo.features.base.BasePresenter
 import io.agora.agorademo.injection.ConfigPersistent
 import io.agora.agorademo.util.clearAndAddAll
+import io.agora.rtc.Constants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import org.joda.time.DateTime
 import java.util.*
@@ -28,8 +29,15 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandDetailsM
     private val lastAdapter: LastAdapter by lazy {
         LastAdapter(listOfBroadcast, BR.broadcast)
                 .map<Broadcast, ItemBroadcastBinding>(R.layout.item_broadcast) {
-                    onClick { }
+                    onClick { joinBroadcast(it.binding.broadcast!!) }
                 }
+    }
+
+    private fun joinBroadcast(broadcast: Broadcast) {
+        UserPrefs.broadcastId = broadcast.id
+        UserPrefs.broadcastChannel = broadcast.broadcast_channel
+        mDataManager.updateBroadcastPeople(broadcast.id, 1)
+        mvpView?.launchBroadcastActivity(broadcast, Constants.CLIENT_ROLE_AUDIENCE)
     }
 
     override fun attachView(mvpView: BrandDetailsMvpView) {
@@ -52,9 +60,8 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandDetailsM
                 }))
     }
 
-    fun createBroadcast(brand: Brand = mBrand) {
+    fun createBroadcast() {
         mvpView?.showProgress(true)
-        UserPrefs.brandId = brand.id
         UserPrefs.broadcastChannel = UUID.randomUUID().toString()
         createBroadcast(isBroadcasting = true)
     }
@@ -62,8 +69,8 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandDetailsM
     private fun createBroadcast(isBroadcasting: Boolean) {
 
         val broadcast = Broadcast(
-                id = "${UserPrefs.brandId}|${UserPrefs.id}",//This will make sure user start only one Broadcast for a Brand
-                brand_id = UserPrefs.brandId,
+                id = "${mBrand.id}|${UserPrefs.id}",//This will make sure user start only one Broadcast for a Brand
+                brand_id = mBrand.id,
                 broadcast_channel = UserPrefs.broadcastChannel,
                 live = isBroadcasting,
                 start = if (isBroadcasting) DateTime.now().millis else null,
@@ -77,12 +84,20 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandDetailsM
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     mvpView?.showProgress(false)
-                    mvpView?.launchBroadcastActivity(broadcast)
+                    if (isBroadcasting) mvpView?.launchBroadcastActivity(broadcast, Constants.CLIENT_ROLE_BROADCASTER)
                 }, { error ->
                     mvpView?.showProgress(false)
                     error.printStackTrace()
                     mvpView?.showError(error.message ?: "createBroadcast Failed")
 
                 }))
+    }
+
+    fun endBroadcast() {
+        createBroadcast(false)
+    }
+
+    fun exitBroadcast() {
+        mDataManager.updateBroadcastPeople(UserPrefs.broadcastId, -1)
     }
 }
