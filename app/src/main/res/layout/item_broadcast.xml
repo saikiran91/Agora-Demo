@@ -1,28 +1,31 @@
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
-            name="brand"
-            type="io.agora.agorademo.data.model.Brand" />
+            name="broadcast"
+            type="io.agora.agorademo.data.model.Broadcast" />
     </data>
 
 
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
         android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:layout_margin="4dp"
-        card_view:cardBackgroundColor="@color/primary"
-        card_view:cardCornerRadius="10dp"
-        card_view:cardPreventCornerOverlap="false"
-        card_view:cardUseCompatPadding="true">
+        app:cardBackgroundColor="@color/primary"
+        app:cardCornerRadius="10dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true">
 
         <ImageView
             android:id="@+id/image_tv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_person" />
+            app:imageUrl="@{broadcast.user_image}"
+            tools:src="@drawable/ic_person" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,9 +43,10 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Name"
+                android:text="@{broadcast.user_name}"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:text="Saikiran91" />
 
             <TextView
                 android:id="@+id/online_tv"
@@ -50,10 +54,10 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_people"
                 android:gravity="center"
-                android:text="100"
+                android:text="@{broadcast.people}"
                 android:textColor="@color/white"
-
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:text="100" />
 
         </LinearLayout>
 
