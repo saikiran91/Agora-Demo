@@ -49,14 +49,14 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="android.support.v7.widget.GridLayoutManager"
-        tools:listitem="@layout/item_broadcast"
-        app:spanCount="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tag_line_tv"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        app:spanCount="2"
+        tools:listitem="@layout/item_broadcast" />
 
     <ProgressBar
         android:id="@+id/progressbar"
@@ -66,6 +66,18 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/list_view"
+        app:layout_constraintEnd_toEndOf="@+id/list_view"
+        app:layout_constraintStart_toStartOf="@+id/list_view"
+        app:layout_constraintTop_toTopOf="@+id/list_view" />
+
+    <TextView
+        android:id="@+id/empty_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Looks Empty."
+        android:textColor="@color/white"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/list_view"
         app:layout_constraintEnd_toEndOf="@+id/list_view"

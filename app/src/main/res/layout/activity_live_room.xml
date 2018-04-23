@@ -40,17 +40,18 @@
                 android:layout_marginStart="6dp"
                 android:background="@drawable/rounded_bg"
                 android:orientation="vertical"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingStart="12dp"
-                app:paddingEnd="12dp">
+                android:paddingEnd="14dp"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:paddingStart="14dp">
 
                 <TextView
                     android:id="@+id/room_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="2dp"
                     android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <View
@@ -133,9 +134,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        app:srcCompat="@drawable/ic_messages"
         android:tint="@color/white"
-        app:fabSize="normal" />
+        app:fabSize="normal"
+        app:srcCompat="@drawable/ic_messages" />
 
 
 </FrameLayout>

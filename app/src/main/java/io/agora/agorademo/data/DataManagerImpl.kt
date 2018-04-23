@@ -118,7 +118,7 @@ internal class DataManagerImpl @Inject constructor() : DataManager {
         db.runTransaction({ transaction ->
             val snapshot = transaction.get(sfDocRef)
             val newPeopleCount = snapshot.getDouble("people")!!.plus(count)
-            if (newPeopleCount > 0) {
+            if (newPeopleCount >= 0) {
                 transaction.update(sfDocRef, "people", newPeopleCount)
             } else {
                 Timber.e("newPeopleCount is already zero")

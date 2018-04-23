@@ -1,7 +1,5 @@
 package io.agora.agorademo.data.model
 
-import com.google.firebase.auth.FirebaseAuth
-
 data class Broadcast(var id: String = "",
                      var brand_id: String = "",
                      val start: Long? = null,
@@ -26,4 +24,5 @@ data class Question(val id: String = "",
                     val question: String = "",
                     val user_id: String = "",
                     val user_name: String = "",
-                    val broadcast_id: String = "")
+                    val broadcast_id: String = "",
+                    val isRead: Boolean = false)

@@ -30,6 +30,7 @@ class BrandsActivity : MvpBaseActivity(), BrandsMvpView {
         activityComponent().inject(this)
         mPresenter.attachView(this)
         setSupportActionBar(toolbar)
+        supportActionBar?.title = null
     }
 
     override fun showProgress(show: Boolean) {

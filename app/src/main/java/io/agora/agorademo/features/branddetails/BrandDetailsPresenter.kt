@@ -1,6 +1,7 @@
 package io.agora.agorademo.features.branddetails
 
 import android.databinding.ObservableArrayList
+import android.databinding.ObservableList
 import com.github.nitrico.lastadapter.LastAdapter
 import io.agora.agorademo.BR
 import io.agora.agorademo.R
@@ -25,11 +26,17 @@ import javax.inject.Inject
 class BrandDetailsPresenter @Inject
 constructor(private val mDataManager: DataManager) : BasePresenter<BrandDetailsMvpView>() {
     lateinit var mBrand: Brand
-    private val listOfBroadcast = ObservableArrayList<Broadcast>()
+    private var broadcastRequestOnGoing = false
+    private val listOfBroadcast: ObservableArrayList<Broadcast> by lazy {
+        ObservableArrayList<Broadcast>()
+    }
     private val lastAdapter: LastAdapter by lazy {
         LastAdapter(listOfBroadcast, BR.broadcast)
                 .map<Broadcast, ItemBroadcastBinding>(R.layout.item_broadcast) {
-                    onClick { joinBroadcast(it.binding.broadcast!!) }
+                    onClick {
+                        if (!broadcastRequestOnGoing) joinBroadcast(it.binding.broadcast!!)
+                        else mvpView?.showError("Try after some time")
+                    }
                 }
     }
 
@@ -37,7 +44,7 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandDetailsM
         UserPrefs.broadcastId = broadcast.id
         UserPrefs.broadcastChannel = broadcast.broadcast_channel
         mDataManager.updateBroadcastPeople(broadcast.id, 1)
-        mvpView?.launchBroadcastActivity(broadcast, Constants.CLIENT_ROLE_AUDIENCE)
+        mvpView?.launchBroadcastActivity(broadcast, mBrand, Constants.CLIENT_ROLE_AUDIENCE)
     }
 
     override fun attachView(mvpView: BrandDetailsMvpView) {
@@ -51,7 +58,8 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandDetailsM
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
                     listOfBroadcast.clearAndAddAll(result.sortedByDescending { it.people })
-                    mvpView?.showProgress(false)
+                    if (!broadcastRequestOnGoing) mvpView?.showProgress(false)
+                    mvpView?.toggleEmptyView(listOfBroadcast.isEmpty())
                 }, { error ->
                     error.printStackTrace()
                     mvpView?.showError(error.message ?: "No message")
@@ -67,7 +75,7 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandDetailsM
     }
 
     private fun createBroadcast(isBroadcasting: Boolean) {
-
+        broadcastRequestOnGoing = true
         val broadcast = Broadcast(
                 id = "${mBrand.id}|${UserPrefs.id}",//This will make sure user start only one Broadcast for a Brand
                 brand_id = mBrand.id,
@@ -83,9 +91,11 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandDetailsM
         addDisposable(mDataManager.createBroadcast(broadcast)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    broadcastRequestOnGoing = false
                     mvpView?.showProgress(false)
-                    if (isBroadcasting) mvpView?.launchBroadcastActivity(broadcast, Constants.CLIENT_ROLE_BROADCASTER)
+                    if (isBroadcasting) mvpView?.launchBroadcastActivity(broadcast, mBrand, Constants.CLIENT_ROLE_BROADCASTER)
                 }, { error ->
+                    broadcastRequestOnGoing = false
                     mvpView?.showProgress(false)
                     error.printStackTrace()
                     mvpView?.showError(error.message ?: "createBroadcast Failed")

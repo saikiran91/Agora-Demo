@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="brand"
             type="io.agora.agorademo.data.model.Brand" />
@@ -11,13 +12,13 @@
 
     <ImageView
         android:id="@+id/brand_image_iv"
-        style="@style/SelectableItemBackground"
         android:layout_width="match_parent"
-        android:transitionName="brand_img"
         android:layout_height="130dp"
         android:layout_marginBottom="4dp"
         android:clickable="true"
         android:focusable="true"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:transitionName="brand_img"
         app:imageUrl="@{brand.image}"
         tools:ignore="ContentDescription"
         tools:src="@drawable/nyx_sample" />

@@ -13,7 +13,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import android.widget.TextView
 import io.agora.agorabase.openlive.model.AGEventHandler
 import io.agora.agorabase.openlive.model.ConstantApp
 import io.agora.agorabase.openlive.model.VideoStatusData
@@ -30,6 +29,7 @@ import io.agora.rtc.video.VideoCanvas
 import kotlinx.android.synthetic.main.activity_live_room.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.slf4j.LoggerFactory
 import java.util.*
 import javax.inject.Inject
@@ -96,8 +96,12 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
         question_list.hide()
     }
 
-    override fun updateQuestionCount(size: Int) {
-        fab.count = size
+    override fun updateQuestionCount() {
+        fab.increase()
+    }
+
+    override fun clearQuestionCount() {
+        fab.count = 0
     }
 
     override fun showProgress(show: Boolean) {
@@ -182,9 +186,6 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
         }
 
         worker().joinChannel(roomName, config().mUid)
-
-        val textRoomName = findViewById<View>(R.id.room_name) as TextView
-        textRoomName.text = roomName
     }
 
     private fun broadcasterUI(button1: ImageView, button2: ImageView, button3: ImageView) {
@@ -220,17 +221,12 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
 
     private fun audienceUI(button1: ImageView, button2: ImageView, button3: ImageView) {
         button1.tag = null
-        button1.setOnClickListener { v ->
-            val tag = v.tag
-            if (tag != null && tag as Boolean) {
-                doSwitchToBroadcaster(false)
-            } else {
-                doSwitchToBroadcaster(true)
-            }
-        }
         button1.clearColorFilter()
+        button1.visibility = View.GONE
+
         button2.visibility = View.GONE
         button3.tag = null
+
         button3.visibility = View.GONE
         button3.clearColorFilter()
     }
@@ -525,9 +521,10 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
         super.onDestroy()
     }
 
-    @Subscribe(sticky = true)
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onLaunchBroadCastEvent(event: LaunchBroadCastEvent) {
         presenter.broadCast = event.broadcast
+        room_name.text = "${event.brand.name} | ${event.broadcast.user_name}"
         EventBus.getDefault().removeStickyEvent(event)
     }
 }

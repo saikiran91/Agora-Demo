@@ -35,6 +35,7 @@ constructor(private val dataManager: DataManager) : BasePresenter<BroadcastMvpVi
                     view.answer_bt.setOnClickListener {
                         answerQuestion(question)
                         mvpView?.hideQuestionList()
+                        mvpView?.clearQuestionCount()
                     }
                 }
             }
@@ -45,9 +46,9 @@ constructor(private val dataManager: DataManager) : BasePresenter<BroadcastMvpVi
                 .subscribe(
                         { ques ->
                             if (ques.answered)
-                                mvpView?.showError("Connecting to user")
+                                mvpView?.showError("Answering to user")
                             else
-                                mvpView?.showError("Call disconnected")
+                                mvpView?.showError("Cant answer now")
                         },
                         { throwable ->
                             Timber.e(throwable, "onFetchQuestionsError")
@@ -58,7 +59,7 @@ constructor(private val dataManager: DataManager) : BasePresenter<BroadcastMvpVi
 
     fun listenToNewQuestions() {
         fun onListenToNewQuestionsUpdate(list: List<Question>) {
-            mvpView?.updateQuestionCount(list.size)
+            if (listOfQuestions.size != list.size) mvpView?.updateQuestionCount()
             listOfQuestions.clearAndAddAll(list)
         }
 
@@ -122,5 +123,4 @@ constructor(private val dataManager: DataManager) : BasePresenter<BroadcastMvpVi
 
         Timber.e("listenToQuestionUpdate Failed")
     }
-
 }
