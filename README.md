@@ -3,5 +3,5 @@
 A Demo App to showcase Agora SDK in Android
 
 
-![Login](/screenshots/Screenshot_20180424-010016.png =100x20)
-![Account Selection](/screenshots/Screenshot_20180424-010024.png =100x20)
+<img src="/screenshots/Screenshot_20180424-010016.png" width="400" height="790">
+<img src="/screenshots/Screenshot_20180424-010024.png" width="400" height="790">
