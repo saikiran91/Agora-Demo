@@ -11,7 +11,7 @@ A Demo App to showcase Agora SDK in Android
 * RxJava
 * [AGORA](https://www.agora.io/en/)
 
-#Video
+# Video
 
 [![Video](http://img.youtube.com/vi/KSoX2qjckik/0.jpg)](http://www.youtube.com/watch?v=KSoX2qjckik "Agora Shopping App Demo")
 
