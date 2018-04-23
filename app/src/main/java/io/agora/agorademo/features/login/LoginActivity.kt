@@ -51,7 +51,6 @@ class LoginActivity : MvpBaseActivity(), LoginMvpView, ErrorView.ErrorListener {
         checkUserLogin()
     }
 
-
     private fun signIn() {
         val signInIntent = mGoogleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)

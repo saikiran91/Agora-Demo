@@ -1,4 +1,4 @@
-package io.agora.agorabase.openlive.ui;
+package io.agora.agorademo.features.base;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -9,13 +9,17 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
 
 import io.agora.agorabase.BuildConfig;
 import io.agora.agorabase.common.Constant;
@@ -25,40 +29,25 @@ import io.agora.agorabase.openlive.model.EngineConfig;
 import io.agora.agorabase.openlive.model.MyEngineEventHandler;
 import io.agora.agorabase.openlive.model.WorkerThread;
 import io.agora.rtc.RtcEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-
-public abstract class BaseActivity extends AppCompatActivity {
-    private final static Logger log = LoggerFactory.getLogger(BaseActivity.class);
+public abstract class AgoraBaseActivity extends MvpBaseActivity {
+    private final static Logger log = LoggerFactory.getLogger(AgoraBaseActivity.class);
+    protected abstract void initUIandEvent();
+    protected abstract void deInitUIandEvent();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ((AGApplication) getApplication()).initWorkerThread();
         final View layout = findViewById(Window.ID_ANDROID_CONTENT);
         ViewTreeObserver vto = layout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
+                layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 initUIandEvent();
             }
         });
-    }
-
-    protected abstract void initUIandEvent();
-
-    protected abstract void deInitUIandEvent();
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -66,7 +55,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (isFinishing()) {
                     return;
                 }
-
                 boolean checkPermissionResult = checkSelfPermissions();
 
                 if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.M)) {
@@ -75,6 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }, 500);
     }
+
 
     private boolean checkSelfPermissions() {
         return checkSelfPermission(Manifest.permission.RECORD_AUDIO, ConstantApp.PERMISSION_REQ_ID_RECORD_AUDIO) &&
@@ -86,32 +75,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         deInitUIandEvent();
         super.onDestroy();
-    }
-
-    public final void closeIME(View v) {
-        InputMethodManager mgr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(v.getWindowToken(), 0); // 0 force close IME
-        v.clearFocus();
-    }
-
-    public final void closeIMEWithoutFocus(View v) {
-        InputMethodManager mgr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        mgr.hideSoftInputFromWindow(v.getWindowToken(), 0); // 0 force close IME
-    }
-
-    public void openIME(final EditText v) {
-        final boolean focus = v.requestFocus();
-        if (v.hasFocus()) {
-            final Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    InputMethodManager mgr = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                    boolean result = mgr.showSoftInput(v, InputMethodManager.SHOW_FORCED);
-                    log.debug("openIME " + focus + " " + result);
-                }
-            });
-        }
     }
 
     public boolean checkSelfPermission(String permission, int requestCode) {
@@ -148,14 +111,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         return ((AGApplication) getApplication()).getWorkerThread().eventHandler();
     }
 
-    public final void showLongToast(final String msg) {
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-            }
-        });
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -190,12 +145,5 @@ public abstract class BaseActivity extends AppCompatActivity {
                 break;
             }
         }
-    }
-
-    protected void initVersionInfo() {
-        String version = "V " + BuildConfig.VERSION_NAME + "(Build: " + BuildConfig.VERSION_CODE
-                + ", " + ConstantApp.APP_BUILD_DATE + ", SDK: " + Constant.MEDIA_SDK_VERSION + ")";
-//        TextView textVersion = (TextView) findViewById(R.id.app_version);
-//        textVersion.setText(version);
     }
 }

@@ -23,6 +23,7 @@
         <ImageView
             android:id="@+id/image_tv"
             android:layout_width="match_parent"
+            android:scaleType="centerCrop"
             android:layout_height="match_parent"
             app:imageUrl="@{broadcast.user_image}"
             tools:src="@drawable/ic_person" />
@@ -54,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:drawableStart="@drawable/ic_people"
                 android:gravity="center"
-                android:text="@{broadcast.people}"
+                android:text="@{Integer.toString(broadcast.people)}"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 tools:text="100" />

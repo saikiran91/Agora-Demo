@@ -1,5 +1,7 @@
 package io.agora.agorademo.features.base
 
+import io.agora.agorademo.data.model.Brand
+
 /**
  * Every presenter in the app must either implement this interface or extend BasePresenter
  * indicating the MvpView type that wants to be attached with.

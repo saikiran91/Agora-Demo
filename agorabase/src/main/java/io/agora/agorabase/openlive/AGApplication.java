@@ -1,6 +1,5 @@
 package io.agora.agorabase.openlive;
 
-import android.app.Application;
 import android.support.multidex.MultiDexApplication;
 
 import io.agora.agorabase.openlive.model.WorkerThread;

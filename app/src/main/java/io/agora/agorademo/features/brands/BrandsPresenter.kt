@@ -1,6 +1,9 @@
 package io.agora.agorademo.features.brands
 
 import android.databinding.ObservableArrayList
+import android.os.Build
+import android.support.v4.util.Pair
+import android.view.View
 import com.github.nitrico.lastadapter.LastAdapter
 import io.agora.agorademo.BR
 import io.agora.agorademo.R
@@ -11,6 +14,7 @@ import io.agora.agorademo.features.base.BasePresenter
 import io.agora.agorademo.injection.ConfigPersistent
 import io.agora.agorademo.util.clearAndAddAll
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.item_brands.view.*
 import javax.inject.Inject
 
 /**
@@ -22,7 +26,15 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandsMvpView
     private val listOfBands = ObservableArrayList<Brand>()
     private val lastAdapter: LastAdapter by lazy {
         LastAdapter(listOfBands, BR.brand)
-                .map<Brand, ItemBrandsBinding>(R.layout.item_brands)
+                .map<Brand, ItemBrandsBinding>(R.layout.item_brands) {
+                    onClick {
+                        val p1 = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            Pair(it.itemView.brand_image_iv as View, it.itemView.brand_image_iv.transitionName)
+                        } else null
+
+                        mvpView?.launchBrandDetails(p1, it.binding.brand!!)
+                    }
+                }
     }
 
     override fun attachView(mvpView: BrandsMvpView) {
@@ -42,7 +54,7 @@ constructor(private val mDataManager: DataManager) : BasePresenter<BrandsMvpView
                         { error ->
                             error.printStackTrace()
                             mvpView?.showError(error.message ?: "No message")
-                            mvpView?.showProgress(true)
+                            mvpView?.showProgress(false)
                         })
         )
     }

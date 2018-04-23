@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import io.agora.agorademo.AgoraApp
+import org.greenrobot.eventbus.EventBus
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -85,4 +86,12 @@ fun TextInputLayout.setUpTextChangeListenerToClearError(view: EditText) {
             this@setUpTextChangeListenerToClearError.error = ""
         }
     })
+}
+
+fun EventBus.regOnce(subscriber: Any) {
+    if (!isRegistered(subscriber)) register(subscriber)
+}
+
+fun EventBus.unregOnce(subscriber: Any) {
+    if (isRegistered(subscriber)) unregister(subscriber)
 }

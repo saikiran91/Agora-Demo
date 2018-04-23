@@ -8,5 +8,7 @@ object UserPrefs : KotprefModel() {
     var name by stringPref()
     var email by stringPref()
     var photoUrl by stringPref()
+    var brandId by stringPref()
+    var broadcastChannel by stringPref()
 }
 
