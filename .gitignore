@@ -53,3 +53,4 @@ src/androidTest/
 src/main/java/
 src/main/res/drawable/
 src/test/
+!/apk/people_cart_debug.apk
