@@ -27,6 +27,7 @@ public class MyEngineEventHandler {
     }
 
     public void removeEventHandler(AGEventHandler handler) {
+
         this.mEventHandlerList.remove(handler);
     }
 
@@ -37,9 +38,7 @@ public class MyEngineEventHandler {
         public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
             log.debug("onFirstRemoteVideoDecoded " + (uid & 0xFFFFFFFFL) + " " + width + " " + height + " " + elapsed);
 
-            Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
-            while (it.hasNext()) {
-                AGEventHandler handler = it.next();
+            for (AGEventHandler handler : mEventHandlerList.keySet()) {
                 handler.onFirstRemoteVideoDecoded(uid, width, height, elapsed);
             }
         }
@@ -53,9 +52,7 @@ public class MyEngineEventHandler {
         public void onUserJoined(int uid, int elapsed) {
             log.debug("onUserJoined " + (uid & 0xFFFFFFFFL) + " " + elapsed);
 
-            Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
-            while (it.hasNext()) {
-                AGEventHandler handler = it.next();
+            for (AGEventHandler handler : mEventHandlerList.keySet()) {
                 handler.onUserJoined(uid, elapsed);
             }
         }
@@ -63,9 +60,7 @@ public class MyEngineEventHandler {
         @Override
         public void onUserOffline(int uid, int reason) {
             // FIXME this callback may return times
-            Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
-            while (it.hasNext()) {
-                AGEventHandler handler = it.next();
+            for (AGEventHandler handler : mEventHandlerList.keySet()) {
                 handler.onUserOffline(uid, reason);
             }
         }
