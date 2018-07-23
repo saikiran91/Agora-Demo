@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RelativeLayout
@@ -62,9 +63,9 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
         input.hint = "Your question?"
         input.imeOptions = EditorInfo.IME_ACTION_DONE
         val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setPositiveButton("Done", { _, _ ->
+        alertDialog.setPositiveButton("Done") { _, _ ->
             presenter.askQuestion(input.text.toString())
-        })
+        }
         input.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_DONE -> {
@@ -169,6 +170,7 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
         val button3 = findViewById<View>(R.id.btn_3) as ImageView
 
         if (isBroadcaster(cRole)) {
+            buy_btn.hide()
             val surfaceV = RtcEngine.CreateRendererView(applicationContext)
             rtcEngine().setupLocalVideo(VideoCanvas(surfaceV, VideoCanvas.RENDER_MODE_HIDDEN, 0))
             surfaceV.setZOrderOnTop(true)
@@ -180,6 +182,7 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
             worker().preview(true, surfaceV, 0)
             broadcasterUI(button1, button2, button3)
         } else {
+            buy_btn.show()
             audienceUI(button1, button2, button3)
             fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_fab_question));
             fab.setOnClickListener { askQuestion() }
@@ -494,6 +497,11 @@ class BroadcastActivity : AgoraBaseActivity(), AGEventHandler, BroadcastMvpView,
         }
         recycler.visibility = View.VISIBLE
         mSmallVideoViewDock!!.visibility = View.VISIBLE
+    }
+
+    fun onBuyClicked(view: View) {
+        "Item Added to Your Cart".showAsToast(this)
+        (view as Button).isEnabled = false
     }
 
     companion object {

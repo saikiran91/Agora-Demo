@@ -111,6 +111,15 @@
                     android:layout_height="match_parent"
                     android:scaleType="center"
                     android:src="@drawable/btn_mute" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/buy_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:onClick="onBuyClicked"
+                    android:text="Buy Now"
+                    android:textColor="@color/white"
+                    app:backgroundTint="#FF7500" />
             </io.agora.agorabase.ui.AGLinearLayout>
 
         </LinearLayout>
@@ -126,7 +135,6 @@
             android:visibility="gone"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             tools:listitem="@layout/item_question" />
-
     </RelativeLayout>
 
     <com.andremion.counterfab.CounterFab

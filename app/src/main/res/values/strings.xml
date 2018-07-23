@@ -1,7 +1,6 @@
 <resources>
-    <string name="app_name">People Cart</string>
+    <string name="app_name">Brandkart</string>
 
-    <!-- Error View -->
     <string name="error_title">Oops</string>
     <string name="error_message">There was a problem loading the page, please try again!</string>
     <string name="error_reload">Reload</string>

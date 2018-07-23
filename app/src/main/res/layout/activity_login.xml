@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/primary_dark">
 
-
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/login_btn"
         android:layout_width="match_parent"
@@ -47,7 +46,7 @@
             android:drawableStart="@drawable/ic_shopping_cart"
             android:fontFamily="@font/aldrich"
             android:gravity="center_vertical"
-            android:text="People Cart"
+            android:text="Brandkart"
             android:textColor="@color/white"
             android:textSize="34sp" />
 
